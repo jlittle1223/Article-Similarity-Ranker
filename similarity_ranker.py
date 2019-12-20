@@ -170,15 +170,20 @@ def scholarly_search(query):
 
 
 def setup_argparser():
-    parser = argparse.ArgumentParser(description = "Test Description")
+    parser = argparse.ArgumentParser(description = "This program will take as input a title of an article on google scholar and will output a ranked list of similar articles.")
 
     parser.add_argument("title", help = "Title of article to be searched for on google scholar")
 
     parser.add_argument("--load", help = "Loads a previously stored search query from search_query.pk",
                         action = "store_true")
 
+    parser.add_argument("--save", help = "Saves the query locally to search_query.pk",
+                        action = "store_true")
+
     parser.add_argument("--output", help = "If this flag is set, the data will be saved in {}".format(_OUTPUT_FILE_PATH),
                         action = "store_true")
+
+    
 
     args = parser.parse_args()
 
@@ -195,8 +200,9 @@ def main():
     if args.load:
         publication, citations = load_publication()
     else:
-        #publication, citations = scholarly_search(query)
-        pass
+        publication, citations = scholarly_search(query)
+        if args.save:
+            save_publication(publication, citations)
 
     corpus, citation_abstract_dict = create_corpus(publication, citations)
 
